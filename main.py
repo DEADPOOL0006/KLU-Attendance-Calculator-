@@ -1,5 +1,4 @@
 import logging
-import os
 import asyncio
 from telegram import Update, ReplyKeyboardMarkup
 from telegram.ext import (
@@ -18,8 +17,8 @@ components = ["Lecture", "Skilling", "Practical", "Tutorial", "Done"]
 # Start attendance process
 async def start_attendance(update: Update, context: CallbackContext) -> int:
     context.user_data["attendance_data"] = {}  # Store attendance for each component
-
     reply_keyboard = [[comp] for comp in components]
+    
     await update.message.reply_text(
         "Select a component (or type 'Done' when finished):",
         reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
@@ -77,9 +76,9 @@ async def cancel(update: Update, context: CallbackContext) -> int:
     await update.message.reply_text("Attendance calculation canceled.")
     return ConversationHandler.END
 
-# Main function
+# Start bot
 async def main():
-    BOT_TOKEN = os.getenv("BOT_TOKEN")  # ✅ Fetch from environment variables
+    BOT_TOKEN = "7544916414:AAER4wo7zVUJXbIqrGTiGvS5Bf5S8M_-Dds"
 
     app = Application.builder().token(BOT_TOKEN).build()
 
@@ -94,13 +93,13 @@ async def main():
 
     app.add_handler(conv_handler)
 
-    logging.info("Bot is running...")
+    print("✅ Bot is running on Render...")
     await app.run_polling()
 
-# Run the bot
+# ✅ Fix for Render & Google Colab
 if __name__ == "__main__":
     try:
         asyncio.get_running_loop()
-        asyncio.ensure_future(main())  # ✅ If loop is running, use this
+        asyncio.ensure_future(main())  # ✅ If a loop is already running, use this
     except RuntimeError:
         asyncio.run(main())  # ✅ If no loop is running, start a new one
