@@ -1,9 +1,6 @@
 import logging
-import asyncio
 from telegram import Update, ReplyKeyboardMarkup
-from telegram.ext import (
-    Application, CommandHandler, MessageHandler, filters, ConversationHandler, CallbackContext
-)
+from telegram.ext import Application, CommandHandler, MessageHandler, filters, ConversationHandler, CallbackContext
 
 # Enable logging
 logging.basicConfig(format="%(asctime)s - %(levelname)s - %(message)s", level=logging.INFO)
@@ -77,8 +74,8 @@ async def cancel(update: Update, context: CallbackContext) -> int:
     return ConversationHandler.END
 
 # Start bot
-async def main():
-    BOT_TOKEN = "7544916414:AAER4wo7zVUJXbIqrGTiGvS5Bf5S8M_-Dds"  # Replace with your actual bot token
+def main():
+    BOT_TOKEN = "7544916414:AAH1ovt9ObEbvrSOOrTFbfYvPXG_MGb5v40"  # Replace with your actual bot token
 
     app = Application.builder().token(BOT_TOKEN).build()
 
@@ -93,22 +90,8 @@ async def main():
 
     app.add_handler(conv_handler)
 
-    print("✅ Bot is running on Render...")
-    await app.run_polling()
+    print("✅ Bot is running...")
+    app.run_polling()
 
-# ✅ Fix for Render & Google Colab
 if __name__ == "__main__":
-    import sys
-
-    if sys.platform == "win32":
-        asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
-
-    try:
-        loop = asyncio.get_running_loop()
-    except RuntimeError:
-        loop = None
-
-    if loop and loop.is_running():
-        asyncio.ensure_future(main())  # ✅ If a loop is already running, use this
-    else:
-        asyncio.run(main())  # ✅ If no loop is running, start a new one
+    main()
