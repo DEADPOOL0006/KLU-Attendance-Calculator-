@@ -1,4 +1,5 @@
 import logging
+import nest_asyncio
 import asyncio
 from telegram import Update, ReplyKeyboardMarkup
 from telegram.ext import (
@@ -16,7 +17,7 @@ components = ["Lecture", "Skilling", "Practical", "Tutorial", "Done"]
 
 # Start attendance process
 async def start_attendance(update: Update, context: CallbackContext) -> int:
-    context.user_data["attendance_data"] = {}  # Store attendance for each component
+    context.user_data["attendance_data"] = {}
     reply_keyboard = [[comp] for comp in components]
     
     await update.message.reply_text(
@@ -30,7 +31,7 @@ async def get_component(update: Update, context: CallbackContext) -> int:
     component = update.message.text
 
     if component == "Done":
-        return await calculate_final_attendance(update, context)  # Proceed to final calculation
+        return await calculate_final_attendance(update, context)
 
     context.user_data["current_component"] = component
     await update.message.reply_text(f"Enter attendance percentage for {component} (e.g., 75)")
@@ -62,7 +63,7 @@ async def calculate_final_attendance(update: Update, context: CallbackContext) -
         await update.message.reply_text("No attendance data provided.")
         return ConversationHandler.END
 
-    total_percentage = sum(attendance_data.values()) / len(attendance_data)  # Average attendance
+    total_percentage = sum(attendance_data.values()) / len(attendance_data)
 
     if total_percentage >= 85:
         await update.message.reply_text(f"✅ Final Attendance: {total_percentage:.2f}%")
@@ -93,9 +94,11 @@ async def main():
 
     app.add_handler(conv_handler)
 
-    print("✅ Bot is running...")  # Debug message
+    print("✅ Bot is running...")
     await app.run_polling()
 
-# Run the bot (For Colab, use asyncio)
-if __name__ == "__main__":
-    asyncio.run(main())
+# ✅ FIX FOR COLAB: Prevent event loop error
+nest_asyncio.apply()
+
+# ✅ Run bot in Google Colab
+await main()
