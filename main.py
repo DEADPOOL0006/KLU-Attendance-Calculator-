@@ -78,7 +78,7 @@ async def cancel(update: Update, context: CallbackContext) -> int:
 
 # Start bot
 async def main():
-    BOT_TOKEN = "7544916414:AAER4wo7zVUJXbIqrGTiGvS5Bf5S8M_-Dds"
+    BOT_TOKEN = "7544916414:AAER4wo7zVUJXbIqrGTiGvS5Bf5S8M_-Dds"  # Replace with your actual bot token
 
     app = Application.builder().token(BOT_TOKEN).build()
 
@@ -98,8 +98,17 @@ async def main():
 
 # ✅ Fix for Render & Google Colab
 if __name__ == "__main__":
+    import sys
+
+    if sys.platform == "win32":
+        asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+
     try:
-        asyncio.get_running_loop()
-        asyncio.ensure_future(main())  # ✅ If a loop is already running, use this
+        loop = asyncio.get_running_loop()
     except RuntimeError:
+        loop = None
+
+    if loop and loop.is_running():
+        asyncio.ensure_future(main())  # ✅ If a loop is already running, use this
+    else:
         asyncio.run(main())  # ✅ If no loop is running, start a new one
