@@ -1,4 +1,5 @@
 import logging
+import asyncio
 from telegram import Update, ReplyKeyboardMarkup
 from telegram.ext import (
     Application, CommandHandler, MessageHandler, filters, ConversationHandler, CallbackContext
@@ -8,7 +9,7 @@ from telegram.ext import (
 logging.basicConfig(format="%(asctime)s - %(levelname)s - %(message)s", level=logging.INFO)
 
 # Define states
-SELECT_COMPONENT, GET_ATTENDANCE, FINAL_CALCULATION = range(3)
+SELECT_COMPONENT, GET_ATTENDANCE = range(2)
 
 # Components list
 components = ["Lecture", "Skilling", "Practical", "Tutorial", "Done"]
@@ -16,8 +17,8 @@ components = ["Lecture", "Skilling", "Practical", "Tutorial", "Done"]
 # Start attendance process
 async def start_attendance(update: Update, context: CallbackContext) -> int:
     context.user_data["attendance_data"] = {}  # Store attendance for each component
-
     reply_keyboard = [[comp] for comp in components]
+    
     await update.message.reply_text(
         "Select a component (or type 'Done' when finished):",
         reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
@@ -92,22 +93,9 @@ async def main():
 
     app.add_handler(conv_handler)
 
+    print("✅ Bot is running...")  # Debug message
     await app.run_polling()
 
-# Run bot in Google Colab
-await main()
-("cancel", cancel)]
-    )
-
-    app.add_handler(conv_handler)
-
-    # Ensure the bot keeps running even after a restart
-    while True:
-        try:
-            await app.run_polling()
-        except Exception as e:
-            logging.error(f"Error: {e}")
-            await asyncio.sleep(5)  # Wait and retry if an error occurs
-
-# Run bot in Google Colab
-await main()
+# Run the bot (For Colab, use asyncio)
+if __name__ == "__main__":
+    asyncio.run(main())
